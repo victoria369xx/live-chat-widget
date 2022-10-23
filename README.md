@@ -16,23 +16,15 @@ docker run --rm -p 5050:5050 thajeztah/pgadmin4
 
 **Настройки сервера в PG-Admin:**
 
-General:
-
-&emsp;name: PostgreSQL WidgetChat
-
-Connection:
-
-&emsp;Host name/address: localhost
-
-&emsp;Port: 5432
-
-&emsp;Maintenance database: postgres
-
-&emsp;Username: postgres
-
-&emsp;Password: myPassword
-
-**database**: live_chat_widget
+- General:
+  - name: PostgreSQL WidgetChat
+- Connection:
+  - Host name/address: localhost
+  - Port: 5432
+  - Maintenance database: postgres
+  - Username: postgres
+  - Password: myPassword
+- **database**: live_chat_widget
 
 ---
 
@@ -41,99 +33,99 @@ Connection:
 **Questions:**
 
 1. /question
-   получение списка всех вопросов
-   метод GET
-   возвращается массив объектов:
-   [
-   &ensp;{
-   &ensp;&ensp;"id": 1,
-   &ensp;&ensp;"text": "first question",
-   &ensp;&ensp;"createdAt": "2022-10-22T21:18:14.002Z",
-   &ensp;&ensp;"updatedAt": "2022-10-22T21:18:14.002Z",
-   &ensp;&ensp;"userId": 1
-   &ensp;},
-   &ensp;{
-   &ensp;&ensp;"id": 2,
-   &ensp;&ensp;"text": "2 question",
-   &ensp;&ensp;"createdAt": "2022-10-22T21:33:42.816Z",
-   &ensp;&ensp;"updatedAt": "2022-10-22T21:33:42.816Z",
-   &ensp;&ensp;"userId": 2
-   &ensp;},
-   ]
+   - получение списка всех вопросов
+   - метод GET
+   - возвращается массив объектов:
+     [
+     &emsp;{
+     &emsp;&emsp;"id": 1,
+     &emsp;&emsp;"text": "first question",
+     &emsp;&emsp;"createdAt": "2022-10-22T21:18:14.002Z",
+     &emsp;&emsp;"updatedAt": "2022-10-22T21:18:14.002Z",
+     &emsp;&emsp;"userId": 1
+     &emsp;},
+     &emsp;{
+     &emsp;&emsp;"id": 2,
+     &emsp;&emsp;"text": "2 question",
+     &emsp;&emsp;"createdAt": "2022-10-22T21:33:42.816Z",
+     &emsp;&emsp;"updatedAt": "2022-10-22T21:33:42.816Z",
+     &emsp;&emsp;"userId": 2
+     &emsp;},
+     ]
 2. /question
-   отправление вопроса
-   метод POST
-   body:
-   {
-   &ensp;"text": STRING NOT NULL,
-   &ensp;"name": STRING NOT NULL,
-   &ensp;"email": STRING UNIQUE,
-   &ensp;"phone": STRING UNIQUE
-   }
-   должно быть заполнено либо поле email, либо phone (оба NULL нельзя)
-   возвращается объект:
-   {
-   &ensp;"id": 4,
-   &ensp;"userId": 3,
-   &ensp;"text": "test",
-   &ensp;"updatedAt": "2022-10-22T22:06:06.537Z",
-   &ensp;"createdAt": "2022-10-22T22:06:06.537Z"
-   }
-   также создается пользователь, если email или phone новые (роль по умолчанию ставится 1 - роль user, флаг is_reg ставится false, то есть не зарегестрированный пользователь)
-   если пользователь с таким email или phone уже есть, но имя другое, то имя пользователя меняется на новое
+   - отправление вопроса
+   - метод POST
+   - body:
+     {
+     &emsp;"text": STRING NOT NULL,
+     &emsp;"name": STRING NOT NULL,
+     &emsp;"email": STRING UNIQUE,
+     &emsp;"phone": STRING UNIQUE
+     }
+   - должно быть заполнено либо поле email, либо phone (оба NULL нельзя)
+   - возвращается объект:
+     {
+     &emsp;"id": 4,
+     &emsp;"userId": 3,
+     &emsp;"text": "test",
+     &emsp;"updatedAt": "2022-10-22T22:06:06.537Z",
+     &emsp;"createdAt": "2022-10-22T22:06:06.537Z"
+     }
+   - также создается пользователь, если email или phone новые (роль по умолчанию ставится 1 - роль user, флаг is_reg ставится false, то есть не зарегестрированный пользователь)
+     если пользователь с таким email или phone уже есть, но имя другое, то имя пользователя меняется на новое
 
 **Users:**
 
 1. /user
-   получение списка всех пользователей
-   метод GET
-   возвращается массив объектов:
-   [
-   &ensp;{
-   &ensp;&ensp;"id": 2,
-   &ensp;&ensp;"name": "Anya",
-   &ensp;&ensp;"email": null,
-   &ensp;&ensp;"phone": "+71111111111",
-   &ensp;&ensp;"password": null,
-   &ensp;&ensp;"is_reg": false,
-   &ensp;&ensp;"createdAt": "2022-10-22T21:33:42.774Z",
-   &ensp;&ensp;"updatedAt": "2022-10-22T21:33:42.774Z",
-   &ensp;&ensp;"roleId": 1
-   &ensp;},
-   ]
+   - получение списка всех пользователей
+   - метод GET
+   - возвращается массив объектов:
+     [
+     &emsp;{
+     &emsp;&emsp;"id": 2,
+     &emsp;&emsp;"name": "Anya",
+     &emsp;&emsp;"email": null,
+     &emsp;&emsp;"phone": "+71111111111",
+     &emsp;&emsp;"password": null,
+     &emsp;&emsp;"is_reg": false,
+     &emsp;&emsp;"createdAt": "2022-10-22T21:33:42.774Z",
+     &emsp;&emsp;"updatedAt": "2022-10-22T21:33:42.774Z",
+     &emsp;&emsp;"roleId": 1
+     &emsp;},
+     ]
 
 **Roles:**
 
 1. /role
-   получение списка всех ролей
-   метод GET
-   возвращается массив объектов:
-   [
-   &ensp;{
-   &ensp;&ensp;"id": 1,
-   &ensp;&ensp;"name": "user",
-   &ensp;&ensp;"createdAt": "2022-10-22T21:11:26.832Z",
-   &ensp;&ensp;"updatedAt": "2022-10-22T21:11:26.832Z"
-   &ensp;},
-   &ensp;{
-   &ensp;&ensp;"id": 10,
-   &ensp;&ensp;"name": "admin",
-   &ensp;&ensp;"createdAt": "2022-10-22T21:11:41.487Z",
-   &ensp;&ensp;"updatedAt": "2022-10-22T21:11:41.487Z"
-   &ensp;}
-   ]
+   - получение списка всех ролей
+   - метод GET
+   - возвращается массив объектов:
+     [
+     &emsp;{
+     &emsp;&emsp;"id": 1,
+     &emsp;&emsp;"name": "user",
+     &emsp;&emsp;"createdAt": "2022-10-22T21:11:26.832Z",
+     &emsp;&emsp;"updatedAt": "2022-10-22T21:11:26.832Z"
+     &emsp;},
+     &emsp;{
+     &emsp;&emsp;"id": 10,
+     &emsp;&emsp;"name": "admin",
+     &emsp;&emsp;"createdAt": "2022-10-22T21:11:41.487Z",
+     &emsp;&emsp;"updatedAt": "2022-10-22T21:11:41.487Z"
+     &emsp;}
+     ]
 2. /role
-   создание новой роли
-   метод POST
-   body:
-   {
-   &ensp;"id": INTEGER NOT NULL UNIQUE,
-   &ensp;"name": STRING NOT NULL UNIQUE,
-   }
-   возвращается объект:
-   {
-   &ensp;"id": 1,
-   &ensp;"name": "user",
-   &ensp;"createdAt": "2022-10-22T21:11:26.832Z",
-   &ensp;"updatedAt": "2022-10-22T21:11:26.832Z"
-   }
+   - создание новой роли
+   - метод POST
+   - body:
+     {
+     &emsp;"id": INTEGER NOT NULL UNIQUE,
+     &emsp;"name": STRING NOT NULL UNIQUE,
+     }
+   - возвращается объект:
+     {
+     &emsp;"id": 1,
+     &emsp;"name": "user",
+     &emsp;"createdAt": "2022-10-22T21:11:26.832Z",
+     &emsp;"updatedAt": "2022-10-22T21:11:26.832Z"
+     }
