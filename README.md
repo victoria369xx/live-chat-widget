@@ -10,18 +10,28 @@ docker run --name psql-container -p 5432:5432 -e POSTGRES_PASSWORD=myPassword -d
 (наш пароль: myPassword (как в примере))
 
 **Необходимо установить PG-Admin (скачать приложение) или установить PG-Admin с помощью Docker:**
+
 docker run --rm -p 5050:5050 thajeztah/pgadmin4
 тогда PG-Admin будет доступен по адресу в браузере: http://localhost:5050
 
 **Настройки сервера в PG-Admin:**
+
 General:
+
 &emsp;name: PostgreSQL WidgetChat
+
 Connection:
+
 &emsp;Host name/address: localhost
+
 &emsp;Port: 5432
+
 &emsp;Maintenance database: postgres
+
 &emsp;Username: postgres
+
 &emsp;Password: myPassword
+
 **database**: live_chat_widget
 
 ---
