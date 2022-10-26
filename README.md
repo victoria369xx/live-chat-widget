@@ -2,8 +2,8 @@
 
 ### Установка и настройка PostgreSQL в Docker:
 
-https://habr.com/ru/post/578744/
-https://www.cloud4y.ru/blog/installing-and-configuring-postgre-sql/
+- https://habr.com/ru/post/578744/
+- https://www.cloud4y.ru/blog/installing-and-configuring-postgre-sql/
 
 ### Запуск контейнера PostgreSQL:
 
@@ -28,6 +28,17 @@ PG-Admin будет доступен по адресу в браузере: http
 
 ### API: http://localhost:5000/api
 
+Чтобы запросы с вопросами корректно отработали, вначале надо добавить через postman роль пользователя:\
+{\
+&emsp;"id": 1,\
+&emsp;"name": "user"\
+}\
+и также администратора:\
+{\
+&emsp;"id": 10,\
+&emsp;"name": "admin"\
+}\
+
 **Questions:**
 
 1. /question
@@ -40,14 +51,18 @@ PG-Admin будет доступен по адресу в браузере: http
       &emsp;&emsp;"text": "first question",\
       &emsp;&emsp;"createdAt": "2022-10-22T21:18:14.002Z",\
       &emsp;&emsp;"updatedAt": "2022-10-22T21:18:14.002Z",\
-      &emsp;&emsp;"userId": 1\
+      &emsp;&emsp;"fromId": 1,\
+      &emsp;&emsp;"userId": null,\
+      &emsp;&emsp;"toId": null\
       &emsp;},\
       &emsp;{\
       &emsp;&emsp;"id": 2,\
       &emsp;&emsp;"text": "2 question",\
       &emsp;&emsp;"createdAt": "2022-10-22T21:33:42.816Z",\
       &emsp;&emsp;"updatedAt": "2022-10-22T21:33:42.816Z",\
-      &emsp;&emsp;"userId": 2\
+      &emsp;&emsp;"fromId": 2,\
+      &emsp;&emsp;"userId": null,\
+      &emsp;&emsp;"toId": null\
       &emsp;},\
       ]
 2. /question
@@ -64,10 +79,12 @@ PG-Admin будет доступен по адресу в браузере: http
    - возвращается объект:\
      {\
      &emsp;"id": 4,\
-     &emsp;"userId": 3,\
+     &emsp;"fromId": 3,\
      &emsp;"text": "test",\
+     &emsp;"toId": null,\
      &emsp;"updatedAt": "2022-10-22T22:06:06.537Z",\
-     &emsp;"createdAt": "2022-10-22T22:06:06.537Z"\
+     &emsp;"createdAt": "2022-10-22T22:06:06.537Z",\
+     &emsp;"userId": null\
      }
    - также создается пользователь, если email или phone новые (роль по умолчанию ставится 1 - роль user, флаг is_reg ставится false, то есть не зарегестрированный пользователь)\
      если пользователь с таким email или phone уже есть, но имя другое, то имя пользователя меняется на новое
