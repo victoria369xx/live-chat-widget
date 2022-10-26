@@ -20,7 +20,19 @@ const Role = sequelize.define("role", {
   name: { type: DataTypes.STRING, allowNull: false, unique: true },
 });
 
-User.hasMany(Question);
+User.hasMany(Question, {
+  foreignKey: {
+    name: "fromId",
+  },
+});
+Question.belongsTo(User);
+
+User.hasMany(Question, {
+  foreignKey: {
+    name: "toId",
+    allowNull: true,
+  },
+});
 Question.belongsTo(User);
 
 Role.hasMany(User, {

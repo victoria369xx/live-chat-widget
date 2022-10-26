@@ -16,9 +16,13 @@ class UserController {
 
   // async logout(req, res) {}
 
-  async getAll(req, res) {
-    const users = await User.findAll();
-    return res.json(users);
+  async getAll(req, res, next) {
+    try {
+      const users = await User.findAll();
+      return res.json(users);
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
   }
 
   // async get(req, res) {}
