@@ -21,9 +21,13 @@ class roleController {
     }
   }
 
-  async getAll(req, res) {
-    const roles = await Role.findAll();
-    return res.json(roles);
+  async getAll(req, res, next) {
+    try {
+      const roles = await Role.findAll();
+      return res.json(roles);
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
   }
 
   // async get(req, res) {}
