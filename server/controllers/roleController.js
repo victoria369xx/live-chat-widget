@@ -1,9 +1,11 @@
 const ApiError = require("../error/ApiError");
-const { Role } = require("../models/models");
+const Role = require("../models/role");
+// const { Role } = require("../models/models");
 
 class roleController {
   async create(req, res, next) {
     try {
+      //доступ должен быть только у админа (добавить проверку)
       const { id, name } = req.body;
 
       if (!name) {
@@ -23,6 +25,7 @@ class roleController {
 
   async getAll(req, res, next) {
     try {
+      //доступ должен быть только у админа (добавить проверку)
       const roles = await Role.findAll();
       return res.json(roles);
     } catch (e) {
@@ -30,11 +33,11 @@ class roleController {
     }
   }
 
-  // async get(req, res) {}
+  // async get(req, res) {} доступ должен быть только у админа (добавить проверку)
 
-  // async delete(req, res) {}
+  // async delete(req, res) {} доступ должен быть только у админа (добавить проверку)
 
-  // async update(req, res) {}
+  // async update(req, res) {} доступ должен быть только у админа (добавить проверку)
 }
 
 module.exports = new roleController();
