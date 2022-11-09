@@ -1,8 +1,11 @@
 const ApiError = require("../error/ApiError");
-const { User } = require("../models/models");
+const User = require("../models/user");
+// const { User } = require("../models/models");
 
 class UserController {
-  async registartion(req, res) {}
+  async registartion(req, res) {
+    //при регистрации необходимо добавлять роль = user
+  }
 
   async login(req, res) {}
 
@@ -18,6 +21,7 @@ class UserController {
 
   async getAll(req, res, next) {
     try {
+      //доступ должен быть только у админа (добавить проверку)
       const users = await User.findAll();
       return res.json(users);
     } catch (e) {

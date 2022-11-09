@@ -1,10 +1,5 @@
 **npm run dev - запуск сервера**
 
-### Установка и настройка PostgreSQL в Docker:
-
-- https://habr.com/ru/post/578744/
-- https://www.cloud4y.ru/blog/installing-and-configuring-postgre-sql/
-
 ### Запуск контейнера PostgreSQL:
 
 В папке с файлом docker-compose.yml запустить следующие команды:\
@@ -26,18 +21,17 @@ PG-Admin будет доступен по адресу в браузере: http
 
 ---
 
-### API: http://localhost:5000/api
+### Перед началом работы необходимо загрузить миграции и сиды с помощью следующих команд:
 
-Чтобы запросы с вопросами корректно отработали, вначале надо добавить через postman роль пользователя:\
-{\
-&emsp;"id": 1,\
-&emsp;"name": "user"\
-}\
-и также администратора:\
-{\
-&emsp;"id": 10,\
-&emsp;"name": "admin"\
-}\
+npx sequelize-cli db:migrate\
+npx sequelize-cli db:seed:all\
+\
+Теперь в бд изначально в таблице ролей будет 2 роли:
+
+- user с id = 1
+- admin c id = 10
+
+### API: http://localhost:5000/api
 
 **Questions:**
 
@@ -49,20 +43,22 @@ PG-Admin будет доступен по адресу в браузере: http
       &emsp;{\
       &emsp;&emsp;"id": 1,\
       &emsp;&emsp;"text": "first question",\
+      &emsp;&emsp;"is_read": false,\
       &emsp;&emsp;"createdAt": "2022-10-22T21:18:14.002Z",\
       &emsp;&emsp;"updatedAt": "2022-10-22T21:18:14.002Z",\
       &emsp;&emsp;"fromId": 1,\
-      &emsp;&emsp;"userId": null,\
-      &emsp;&emsp;"toId": null\
+      &emsp;&emsp;"toId": null,\
+      &emsp;&emsp;"categoryId": null\
       &emsp;},\
       &emsp;{\
       &emsp;&emsp;"id": 2,\
       &emsp;&emsp;"text": "2 question",\
+      &emsp;&emsp;"is_read": false,\
       &emsp;&emsp;"createdAt": "2022-10-22T21:33:42.816Z",\
       &emsp;&emsp;"updatedAt": "2022-10-22T21:33:42.816Z",\
       &emsp;&emsp;"fromId": 2,\
-      &emsp;&emsp;"userId": null,\
-      &emsp;&emsp;"toId": null\
+      &emsp;&emsp;"toId": null,\
+      &emsp;&emsp;"categoryId": null\
       &emsp;},\
       ]
 2. /question
@@ -78,16 +74,54 @@ PG-Admin будет доступен по адресу в браузере: http
    - должно быть заполнено либо поле email, либо phone (оба NULL нельзя)
    - возвращается объект:\
      {\
+     &emsp;"is_read": false,\
      &emsp;"id": 4,\
      &emsp;"fromId": 3,\
      &emsp;"text": "test",\
      &emsp;"toId": null,\
      &emsp;"updatedAt": "2022-10-22T22:06:06.537Z",\
      &emsp;"createdAt": "2022-10-22T22:06:06.537Z",\
-     &emsp;"userId": null\
+     &emsp;"categoryId": null\
      }
-   - также создается пользователь, если email или phone новые (роль по умолчанию ставится 1 - роль user, флаг is_reg ставится false, то есть не зарегестрированный пользователь)\
+   - также создается пользователь, если email или phone новые (роль по умолчанию ставится 1 - роль user, флаг is_reg ставится false, то есть незарегестрированный пользователь)\
      если пользователь с таким email или phone уже есть, но имя другое, то имя пользователя меняется на новое
+3. /question/:id
+   - получение одного вопроса
+   - метод GET
+   - необходимо указать id вопроса
+   - id должно быть INTEGER
+   - при запросе меняется флаг вопроса is_read на true
+   - возвращается объект:\
+     {\
+      &emsp;"is_read": true,\
+      &emsp;"id": 4,\
+      &emsp;"fromId": 3,\
+      &emsp;"text": "test",\
+      &emsp;"toId": null,\
+      &emsp;"updatedAt": "2022-10-22T22:06:06.537Z",\
+      &emsp;"createdAt": "2022-10-22T22:06:06.537Z",\
+      &emsp;"categoryId": null\
+      }
+4. /question/readFlag
+   - изменение флага is_read (прочитано) у вопроса(ов)
+   - метод PUT
+   - body:\
+     {\
+     &emsp;"questionId": ARRAY (INTEGER),\
+     &emsp;"readFlag": BOOLEAN\
+     }
+   - в questionId необходимо передать массив со значениями id вопросов, у которых надо поменять статус "прочитано" (даже если сообщение одно)
+   - в массиве questionId должны быть значения типа INTEGER
+   - в readFlag указывается флаг, который установится на все вопросы, указанные в questionId (true - прочитан вопрос, false - вопрос непрочитан)
+   - возвращается объект:\
+     {\
+     &emsp;"message": "Данные успешно обновлены"/ "Вопросов с таким(и) id нет, данные не обновлены",\
+     &emsp;"status": "ok",\
+     &emsp;"changedRow": 1\
+     }
+   - changedRow - количество измененных записей в базе данных
+   - если changedRow == 0, то message будет "Вопросов с таким(и) id нет, данные не обновлены"
+   - если хотя бы одно значение в questionId будет некорректным (не тот тип, или вопроса с таким id нет), то никакие данные не обновятся
 
 **Users:**
 
