@@ -1,6 +1,5 @@
 const ApiError = require("../error/ApiError");
 const Role = require("../models/role");
-// const { Role } = require("../models/models");
 
 class roleController {
   async create(req, res, next) {
