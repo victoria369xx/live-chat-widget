@@ -3,7 +3,6 @@ const { sequelize } = require("../models");
 const Question = require("../models/question");
 const Role = require("../models/role");
 const User = require("../models/user");
-// const { User, Question } = require("../models/models");
 
 class questionController {
   async create(req, res, next) {
@@ -60,6 +59,9 @@ class questionController {
   async getAll(req, res, next) {
     try {
       //доступ должен быть только у админа (добавить проверку)
+      //можно добавить фильтры по категориям
+      //можно добавить пагинацию
+      //нужно добавить сортировку
       const questions = await Question.findAll();
       return res.json(questions);
     } catch (e) {
@@ -161,10 +163,10 @@ class questionController {
       next(ApiError.badRequest(e.message));
     }
   }
+
+  // async delete(req, res) {} (доступ должен быть только у админа (добавить проверку))
+
+  // async update(req, res) {} администратор может менять toId (тогда флаг is_read автоматически должен меняться на false), categoryId, is_read (доступ должен быть только у админа (добавить проверку))
 }
-
-// async delete(req, res) {} (доступ должен быть только у админа (добавить проверку))
-
-// async update(req, res) {} администратор может менять toId (тогда флаг is_read автоматически должен меняться на false), categoryId, is_read (доступ должен быть только у админа (добавить проверку))
 
 module.exports = new questionController();

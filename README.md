@@ -31,6 +31,9 @@ npx sequelize-cli db:seed:all\
 - user с id = 1
 - admin c id = 10
 
+**Данный сид загружает дефолтные вопросы в таблицу faq:**\
+npx sequelize db:seed --seed 20221110110357-default-faq.js
+
 ### API: http://localhost:5000/api
 
 **Questions:**
@@ -59,7 +62,7 @@ npx sequelize-cli db:seed:all\
       &emsp;&emsp;"fromId": 2,\
       &emsp;&emsp;"toId": null,\
       &emsp;&emsp;"categoryId": null\
-      &emsp;},\
+      &emsp;}\
       ]
 2. /question
    - отправление вопроса
@@ -140,7 +143,7 @@ npx sequelize-cli db:seed:all\
      &emsp;&emsp;"createdAt": "2022-10-22T21:33:42.774Z",\
      &emsp;&emsp;"updatedAt": "2022-10-22T21:33:42.774Z",\
      &emsp;&emsp;"roleId": 1\
-     &emsp;},\
+     &emsp;}\
      ]
 
 **Roles:**
@@ -178,3 +181,28 @@ npx sequelize-cli db:seed:all\
      &emsp;"createdAt": "2022-10-22T21:11:26.832Z",\
      &emsp;"updatedAt": "2022-10-22T21:11:26.832Z"\
      }
+
+**FAQ**
+
+1. /faq
+   - получение списка всех вопросов и ответов в faq
+   - метод GET
+   - возвращается массив объектов:\
+     [\
+     &emsp;{\
+     &emsp;&emsp;"id": 1,\
+     &emsp;&emsp;"title": "Не пришел билет",\
+     &emsp;&emsp;"answer": "Письмо с билетом может упасть в папку «спам». Рекомендуем проверить все дополнительные папки почты.",\
+     &emsp;&emsp;"categoryId": null,\
+     &emsp;&emsp;"createdAt": "2022-11-10T11:14:06.697Z",\
+     &emsp;&emsp;"updatedAt": "2022-11-10T11:14:06.697Z"\
+     &emsp;},\
+     &emsp;{\
+     &emsp;&emsp;"id": 2,\
+     &emsp;&emsp;"title": "Возврат билетов",\
+     &emsp;&emsp;"answer": "Согласно Постановлению Правительства Российской Федерации №830 от 6 июня 2020 г у организатора есть 180 дней с момента подачи вашей заявки на возврат для того, чтобы определиться с датой переноса, или сделать вам возврат. Обратите внимание на то, что если мероприятие было перенесено, организатор может отказать в возврате. Ваши билеты действительны на новую дату проведения ивента.",\
+     &emsp;&emsp;"categoryId": null,\
+     &emsp;&emsp;"createdAt": "2022-11-10T11:14:06.707Z",\
+     &emsp;&emsp;"updatedAt": "2022-11-10T11:14:06.707Z"\
+     &emsp;}\
+     ]

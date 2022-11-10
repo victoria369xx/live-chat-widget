@@ -1,6 +1,5 @@
 const ApiError = require("../error/ApiError");
 const User = require("../models/user");
-// const { User } = require("../models/models");
 
 class UserController {
   async registartion(req, res) {
