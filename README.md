@@ -2,7 +2,13 @@
 
 # Содержание
 
-[TOC]
+1. [Запуск контейнера PostgreSQL](#Запуск-контейнера-PostgreSQL)
+2. [Перед началом работы](#Перед-началом-работы)
+3. [API](#API)
+4. [Questions](#Questions)
+5. [Users](#Users)
+6. [Roles](#Roles)
+7. [FAQ](#FAQ)
 
 ### Запуск контейнера PostgreSQL:
 
@@ -25,7 +31,9 @@ PG-Admin будет доступен по адресу в браузере: http
 
 ---
 
-### Перед началом работы необходимо загрузить миграции и сиды с помощью следующих команд:
+### Перед началом работы
+
+Перед началом работы необходимо загрузить миграции и сиды с помощью следующих команд:\
 
 npx sequelize-cli db:migrate\
 npx sequelize-cli db:seed:all\
@@ -47,9 +55,11 @@ npx sequelize db:seed --seed 20221108102949-default-role.js
 **Данный сид загружает дефолтные вопросы в таблицу faq:**\
 npx sequelize db:seed --seed 20221110110357-default-faq.js
 
-### API: http://localhost:5000/api
+### API
 
-#### Questions:
+**http://localhost:5000/api**
+
+#### Questions
 
 1. /question
    - получение списка всех вопросов
@@ -140,7 +150,7 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
    - если changedRow == 0, то message будет "Вопросов с таким(и) id нет, данные не обновлены"
    - если хотя бы одно значение в questionId будет некорректным (не тот тип, или вопроса с таким id нет), то никакие данные не обновятся
 
-#### Users:
+#### Users
 
 1. /user
    - получение списка всех пользователей
@@ -160,7 +170,7 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
      &emsp;}\
      ]
 
-#### Roles:
+#### Roles
 
 1. /role
    - получение списка всех ролей
@@ -196,7 +206,7 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
      &emsp;"updatedAt": "2022-10-22T21:11:26.832Z"\
      }
 
-#### FAQ:
+#### FAQ
 
 1. /faq
    - получение списка всех вопросов и ответов в faq
