@@ -35,9 +35,9 @@ PG-Admin будет доступен по адресу в браузере: http
 
 Перед началом работы необходимо загрузить миграции и сиды с помощью следующих команд:\
 
-npx sequelize-cli db:migrate\
-npx sequelize-cli db:seed:all\
-\
+- npx sequelize-cli db:migrate
+- npx sequelize-cli db:seed:all
+
 Теперь в бд изначально будет:
 
 - в таблице ролей будут 2 роли:
@@ -54,6 +54,8 @@ npx sequelize db:seed --seed 20221108102949-default-role.js
 
 **Данный сид загружает дефолтные вопросы в таблицу faq:**\
 npx sequelize db:seed --seed 20221110110357-default-faq.js
+
+---
 
 ### API
 
@@ -150,6 +152,8 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
    - если changedRow == 0, то message будет "Вопросов с таким(и) id нет, данные не обновлены"
    - если хотя бы одно значение в questionId будет некорректным (не тот тип, или вопроса с таким id нет), то никакие данные не обновятся
 
+[:arrow_up:Содержание](#Содержание)
+
 #### Users
 
 1. /user
@@ -169,6 +173,8 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
      &emsp;&emsp;"roleId": 1\
      &emsp;}\
      ]
+
+[:arrow_up:Содержание](#Содержание)
 
 #### Roles
 
@@ -199,12 +205,14 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
      &emsp;"name": STRING NOT NULL UNIQUE,\
      }
    - возвращается объект:\
-     {\
-     &emsp;"id": 1,\
-     &emsp;"name": "user",\
-     &emsp;"createdAt": "2022-10-22T21:11:26.832Z",\
-     &emsp;"updatedAt": "2022-10-22T21:11:26.832Z"\
-     }
+      {\
+      &emsp;"id": 1,\
+      &emsp;"name": "user",\
+      &emsp;"createdAt": "2022-10-22T21:11:26.832Z",\
+      &emsp;"updatedAt": "2022-10-22T21:11:26.832Z"\
+      }
+
+[:arrow_up:Содержание](#Содержание)
 
 #### FAQ
 
@@ -230,3 +238,5 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
      &emsp;&emsp;"updatedAt": "2022-11-10T11:14:06.707Z"\
      &emsp;}\
      ]
+
+[:arrow_up:Содержание](#Содержание)
