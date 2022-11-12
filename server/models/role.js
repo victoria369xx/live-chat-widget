@@ -8,11 +8,27 @@ const Role = sequelize.define(
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: "Необходимо указать номер роли",
+        },
+        isInt: {
+          args: true,
+          msg: "Номер роли (id) должно быть типа integer",
+        },
+      },
     },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: "Необходимо указать название роли",
+        },
+      },
     },
   },
   {}

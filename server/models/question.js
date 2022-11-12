@@ -13,22 +13,52 @@ const Question = sequelize.define(
     text: {
       type: DataTypes.TEXT,
       allowNull: false,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: "Необходимо указать вопрос",
+        },
+      },
     },
     is_read: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+      validate: {
+        isBoolean: {
+          args: true,
+          msg: "Значение is_read должно быть типа boolean",
+        },
+      },
     },
     fromId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      validate: {
+        isInt: {
+          args: true,
+          msg: "Значение fromId должно быть типа integer",
+        },
+      },
     },
     toId: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      validate: {
+        isInt: {
+          args: true,
+          msg: "Значение toId должно быть типа integer",
+        },
+      },
     },
     categoryId: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      validate: {
+        isInt: {
+          args: true,
+          msg: "Значение categoryId должно быть типа integer",
+        },
+      },
     },
   },
   {}

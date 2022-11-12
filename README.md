@@ -1,5 +1,15 @@
 **npm run dev - запуск сервера**
 
+# Содержание
+
+1. [Запуск контейнера PostgreSQL](#Запуск-контейнера-PostgreSQL)
+2. [Перед началом работы](#Перед-началом-работы)
+3. [API](#API)
+4. [Questions](#Questions)
+5. [Users](#Users)
+6. [Roles](#Roles)
+7. [FAQ](#FAQ)
+
 ### Запуск контейнера PostgreSQL:
 
 В папке с файлом docker-compose.yml запустить следующие команды:\
@@ -21,22 +31,37 @@ PG-Admin будет доступен по адресу в браузере: http
 
 ---
 
-### Перед началом работы необходимо загрузить миграции и сиды с помощью следующих команд:
+### Перед началом работы
 
-npx sequelize-cli db:migrate\
-npx sequelize-cli db:seed:all\
-\
-Теперь в бд изначально в таблице ролей будет 2 роли:
+Перед началом работы необходимо загрузить миграции и сиды с помощью следующих команд:\
 
-- user с id = 1
-- admin c id = 10
+- npx sequelize-cli db:migrate
+- npx sequelize-cli db:seed:all
+
+Теперь в бд изначально будет:
+
+- в таблице ролей будут 2 роли:
+  - user с id = 1
+  - admin c id = 10
+- в таблице faq будут 4 вопроса с ответами:
+  - не пришел билет
+  - возврат билетов
+  - процедура возврата
+  - моего вопроса нет в списке
+
+**Данный сид загружает дефолтные роли в таблицу ролей:**\
+npx sequelize db:seed --seed 20221108102949-default-role.js
 
 **Данный сид загружает дефолтные вопросы в таблицу faq:**\
 npx sequelize db:seed --seed 20221110110357-default-faq.js
 
-### API: http://localhost:5000/api
+---
 
-**Questions:**
+### API
+
+**http://localhost:5000/api**
+
+#### Questions
 
 1. /question
    - получение списка всех вопросов
@@ -64,6 +89,7 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
       &emsp;&emsp;"categoryId": null\
       &emsp;}\
       ]
+   - вопросы в массиве возвращаются в порядке убвания по дате создания (сначала новые вопросы)
 2. /question
    - отправление вопроса
    - метод POST
@@ -126,7 +152,9 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
    - если changedRow == 0, то message будет "Вопросов с таким(и) id нет, данные не обновлены"
    - если хотя бы одно значение в questionId будет некорректным (не тот тип, или вопроса с таким id нет), то никакие данные не обновятся
 
-**Users:**
+[:arrow_up:Содержание](#Содержание)
+
+#### Users
 
 1. /user
    - получение списка всех пользователей
@@ -146,7 +174,9 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
      &emsp;}\
      ]
 
-**Roles:**
+[:arrow_up:Содержание](#Содержание)
+
+#### Roles
 
 1. /role
    - получение списка всех ролей
@@ -175,14 +205,16 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
      &emsp;"name": STRING NOT NULL UNIQUE,\
      }
    - возвращается объект:\
-     {\
-     &emsp;"id": 1,\
-     &emsp;"name": "user",\
-     &emsp;"createdAt": "2022-10-22T21:11:26.832Z",\
-     &emsp;"updatedAt": "2022-10-22T21:11:26.832Z"\
-     }
+      {\
+      &emsp;"id": 1,\
+      &emsp;"name": "user",\
+      &emsp;"createdAt": "2022-10-22T21:11:26.832Z",\
+      &emsp;"updatedAt": "2022-10-22T21:11:26.832Z"\
+      }
 
-**FAQ**
+[:arrow_up:Содержание](#Содержание)
+
+#### FAQ
 
 1. /faq
    - получение списка всех вопросов и ответов в faq
@@ -206,3 +238,5 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
      &emsp;&emsp;"updatedAt": "2022-11-10T11:14:06.707Z"\
      &emsp;}\
      ]
+
+[:arrow_up:Содержание](#Содержание)
