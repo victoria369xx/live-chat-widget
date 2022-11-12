@@ -3,17 +3,9 @@ const Role = require("../models/role");
 
 class roleController {
   async create(req, res, next) {
+    //доступ должен быть только у админа (добавить проверку)
     try {
-      //доступ должен быть только у админа (добавить проверку)
       const { id, name } = req.body;
-
-      if (!name) {
-        return next(ApiError.badRequest("Необходимо указать имя роли"));
-      }
-
-      if (!id) {
-        return next(ApiError.badRequest("Необходимо указать номер роли"));
-      }
 
       const role = await Role.create({ id: id, name: name });
       return res.json(role);
@@ -23,8 +15,8 @@ class roleController {
   }
 
   async getAll(req, res, next) {
+    //доступ должен быть только у админа (добавить проверку)
     try {
-      //доступ должен быть только у админа (добавить проверку)
       const roles = await Role.findAll();
       return res.json(roles);
     } catch (e) {

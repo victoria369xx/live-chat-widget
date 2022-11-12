@@ -9,15 +9,6 @@ class questionController {
     try {
       const { text, name, email, phone, toId } = req.body;
 
-      if (!name) {
-        // throw new Error("Необходимо указать имя");
-        return next(ApiError.badRequest("Необходимо указать имя"));
-      }
-
-      if (!text) {
-        return next(ApiError.badRequest("Необходимо указать вопрос"));
-      }
-
       if (!email && !phone) {
         return next(
           ApiError.badRequest("Необходимо оставить контактные данные")
@@ -57,12 +48,24 @@ class questionController {
   }
 
   async getAll(req, res, next) {
+    //доступ должен быть только у админа (добавить проверку)
     try {
-      //доступ должен быть только у админа (добавить проверку)
       //можно добавить фильтры по категориям
-      //можно добавить пагинацию
-      //нужно добавить сортировку
-      const questions = await Question.findAll();
+
+      //пагинация (добавить позже, когда появится реализация на фронте)
+      // let { limit, page } = req.query;
+      // page = page || 1;
+      // limit = limit || 10;
+      // let offset = page * limit - limit;
+      // const questions = await Question.findAndCountAll({
+      //   order: [["createdAt", "DESC"]],
+      //   limit,
+      //   offset,
+      // });
+
+      const questions = await Question.findAll({
+        order: [["createdAt", "DESC"]],
+      });
       return res.json(questions);
     } catch (e) {
       next(ApiError.badRequest(e.message));
@@ -113,11 +116,11 @@ class questionController {
         );
       }
 
-      //question должен быть массивом
+      //questionId должен быть массивом
       if (!Array.isArray(questionId)) {
         return next(
           ApiError.badRequest(
-            "Некорректный запрос: question должен быть массивом"
+            "Некорректный запрос: questionId должен быть массивом"
           )
         );
       }

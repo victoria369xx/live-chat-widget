@@ -13,14 +13,32 @@ const User = sequelize.define(
     name: {
       type: DataTypes.STRING,
       defaultValue: "user",
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: "Необходимо указать имя",
+        },
+      },
     },
     email: {
       type: DataTypes.STRING,
       unique: true,
+      validate: {
+        isEmail: {
+          args: true,
+          msg: "Некорректная почта",
+        },
+      },
     },
     phone: {
       type: DataTypes.STRING,
       unique: true,
+      validate: {
+        isMobilePhone: {
+          args: true,
+          msg: "Некорректный номер телефона",
+        },
+      },
     },
     password: {
       type: DataTypes.STRING,
@@ -28,10 +46,22 @@ const User = sequelize.define(
     is_reg: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+      validate: {
+        isBoolean: {
+          args: true,
+          msg: "Значение is_reg должно быть типа boolean",
+        },
+      },
     },
     roleId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      validate: {
+        isInt: {
+          args: true,
+          msg: "Значение roleId должно быть типа integer",
+        },
+      },
     },
   },
   {}

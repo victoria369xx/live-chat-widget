@@ -13,14 +13,32 @@ const Faq = sequelize.define(
     title: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: "Необходимо указать title",
+        },
+      },
     },
     answer: {
       type: DataTypes.TEXT,
       allowNull: false,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: "Необходимо указать ответ",
+        },
+      },
     },
     categoryId: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      validate: {
+        isInt: {
+          args: true,
+          msg: "Значение categoryId должно быть типа integer",
+        },
+      },
     },
   },
   {}

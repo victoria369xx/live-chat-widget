@@ -19,8 +19,8 @@ class UserController {
   // async logout(req, res) {}
 
   async getAll(req, res, next) {
+    //доступ должен быть только у админа (добавить проверку)
     try {
-      //доступ должен быть только у админа (добавить проверку)
       const users = await User.findAll();
       return res.json(users);
     } catch (e) {

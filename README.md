@@ -1,5 +1,9 @@
 **npm run dev - запуск сервера**
 
+# Содержание
+
+[[_TOC_]]
+
 ### Запуск контейнера PostgreSQL:
 
 В папке с файлом docker-compose.yml запустить следующие команды:\
@@ -26,17 +30,26 @@ PG-Admin будет доступен по адресу в браузере: http
 npx sequelize-cli db:migrate\
 npx sequelize-cli db:seed:all\
 \
-Теперь в бд изначально в таблице ролей будет 2 роли:
+Теперь в бд изначально будет:
 
-- user с id = 1
-- admin c id = 10
+- в таблице ролей будут 2 роли:
+  - user с id = 1
+  - admin c id = 10
+- в таблице faq будут 4 вопроса с ответами:
+  - не пришел билет
+  - возврат билетов
+  - процедура возврата
+  - моего вопроса нет в списке
+
+**Данный сид загружает дефолтные роли в таблицу ролей:**\
+npx sequelize db:seed --seed 20221108102949-default-role.js
 
 **Данный сид загружает дефолтные вопросы в таблицу faq:**\
 npx sequelize db:seed --seed 20221110110357-default-faq.js
 
 ### API: http://localhost:5000/api
 
-**Questions:**
+#### Questions:
 
 1. /question
    - получение списка всех вопросов
@@ -64,6 +77,7 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
       &emsp;&emsp;"categoryId": null\
       &emsp;}\
       ]
+   - вопросы в массиве возвращаются в порядке убвания по дате создания (сначала новые вопросы)
 2. /question
    - отправление вопроса
    - метод POST
@@ -126,7 +140,7 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
    - если changedRow == 0, то message будет "Вопросов с таким(и) id нет, данные не обновлены"
    - если хотя бы одно значение в questionId будет некорректным (не тот тип, или вопроса с таким id нет), то никакие данные не обновятся
 
-**Users:**
+#### Users:
 
 1. /user
    - получение списка всех пользователей
@@ -146,7 +160,7 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
      &emsp;}\
      ]
 
-**Roles:**
+#### Roles:
 
 1. /role
    - получение списка всех ролей
@@ -182,7 +196,7 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
      &emsp;"updatedAt": "2022-10-22T21:11:26.832Z"\
      }
 
-**FAQ**
+#### FAQ:
 
 1. /faq
    - получение списка всех вопросов и ответов в faq
