@@ -1,9 +1,12 @@
 const Router = require("express");
 const router = new Router();
 const roleController = require("../controllers/roleController");
+const authMiddleware = require("../middleware/authMiddleware");
+const checkRole = require("../middleware/checkRoleMiddleare");
 
-router.post("/", roleController.create);
-router.get("/", roleController.getAll);
+//создать новую роль может только администратор (roleIid = 10)
+router.post("/", authMiddleware, checkRole(10), roleController.create);
+router.get("/", authMiddleware, roleController.getAll);
 // router.get("/:id", roleController.get); - получение одной роли
 //router.delete("/:id", roleController.delete) - удаление роли
 //router.put("/:id", roleController.update) - обновление роли

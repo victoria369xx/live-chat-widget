@@ -1,25 +1,130 @@
 const ApiError = require("../error/ApiError");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
+const generateJwt = (id, email, roleId) => {
+  return jwt.sign({ id, email, roleId }, process.env.SECRET_KEY, {
+    expiresIn: "24h",
+  });
+};
+
 class UserController {
-  async registartion(req, res) {
-    //при регистрации необходимо добавлять роль = user
+  async create(req, res, next) {
+    try {
+      const { email, password, roleId } = req.body;
+
+      if (!email || !password) {
+        return next(ApiError.badRequest("Некорректный email или пароль"));
+      }
+
+      const candidate = await User.findOne({ where: { email } });
+      if (candidate) {
+        return next(
+          ApiError.badRequest(
+            `Пользователь с таким email уже существует, его id = ${candidate.id}`
+          )
+        );
+      }
+
+      const hashPassword = await bcrypt.hash(password, 5);
+      const user = await User.create({
+        email: email,
+        roleId: roleId,
+        password: hashPassword,
+        is_reg: true,
+      });
+
+      return res.json({
+        id: user.id,
+        email: user.email,
+        roleId: user.roleId,
+        is_reg: user.is_reg,
+        name: user.name,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      });
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
   }
 
-  async login(req, res) {}
+  async updateRoleAndAuth(req, res, next) {
+    try {
+      const { id, roleId, password } = req.body;
+
+      if (!id || isNaN(id)) {
+        return next(ApiError.badRequest("Некорректный id"));
+      }
+      if (!password) {
+        return next(ApiError.badRequest("Необходимо ввести пароль"));
+      }
+      if (!roleId) {
+        return next(ApiError.badRequest("Необходимо ввести roleId"));
+      }
+
+      const user = await User.findOne({ where: { id } });
+      if (!user) {
+        return next(ApiError.internal("Пользователь не найден"));
+      }
+
+      const hashPassword = await bcrypt.hash(password, 5);
+      const changedRow = await User.update(
+        { roleId: roleId, pasaword: hashPassword, is_reg: true },
+        {
+          where: {
+            id: id,
+          },
+        }
+      );
+
+      if (changedRow[0] === 0) {
+        return next(ApiError.internal("Данные пользователя не обновлены"));
+      }
+
+      const result = {
+        message: "Данные успешно обновлены",
+        status: "ok",
+      };
+
+      return res.json(result);
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
+  }
+
+  async login(req, res, next) {
+    try {
+      const { email, password } = req.body;
+
+      const user = await User.findOne({ where: { email: email } });
+      if (!user) {
+        return next(ApiError.internal("Пользователь не найден"));
+      }
+
+      const comparePassword = bcrypt.compareSync(password, user.password);
+      if (!comparePassword) {
+        return next(ApiError.internal("Указан неверный пароль"));
+      }
+
+      const token = generateJwt(user.id, user.email, user.roleId);
+
+      return res.json({ token });
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
+  }
 
   async check(req, res, next) {
-    const { id } = req.query;
-    if (!id) {
-      return next(ApiError.badRequest("Не задан ID"));
+    try {
+      const token = generateJwt(req.user.id, req.user.email, req.user.roleId);
+      return res.json({ token });
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
     }
-    res.json(id);
   }
 
-  // async logout(req, res) {}
-
   async getAll(req, res, next) {
-    //доступ должен быть только у админа (добавить проверку)
     try {
       const users = await User.findAll();
       return res.json(users);
@@ -28,11 +133,52 @@ class UserController {
     }
   }
 
-  // async get(req, res) {}
+  async delete(req, res, next) {
+    try {
+      const { id } = req.params;
 
-  // async delete(req, res) {}
+      if (isNaN(id)) {
+        return next(
+          ApiError.badRequest("Некорректный запрос: id должно быть числом")
+        );
+      }
 
-  // async update(req, res) {}
+      const user = await User.findOne({
+        where: { id: id },
+      });
+
+      if (!user) {
+        return next(
+          ApiError.badRequest("Нет такого пользователя в базе данных")
+        );
+      }
+
+      await User.destroy({
+        where: {
+          id: id,
+        },
+        force: true,
+      });
+
+      const result = {
+        message: "Пользователь удален",
+        status: "ok",
+      };
+      return res.json(result);
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
+  }
+
+  // async logout(req, res, next) {
+  //   try {
+  //   } catch (e) {
+  //     next(ApiError.badRequest(e.message));
+  //   }
+  // }
+
+  // async get(req, res, next) {}
+  // async update(req, res, next) {}
 }
 
 module.exports = new UserController();
