@@ -5,10 +5,10 @@
 1. [Запуск контейнера PostgreSQL](#Запуск-контейнера-PostgreSQL)
 2. [Перед началом работы](#Перед-началом-работы)
 3. [API](#API)
-4. [Questions](#Questions)
-5. [Users](#Users)
-6. [Roles](#Roles)
-7. [FAQ](#FAQ)
+   1. [Questions](#Questions)
+   2. [Users](#Users)
+   3. [Roles](#Roles)
+   4. [FAQ](#FAQ)
 
 ### Запуск контейнера PostgreSQL:
 
@@ -33,27 +33,38 @@ PG-Admin будет доступен по адресу в браузере: http
 
 ### Перед началом работы
 
-Перед началом работы необходимо загрузить миграции и сиды с помощью следующих команд:\
+Перед началом работы необходимо загрузить миграции и сиды с помощью следующих команд:
 
 - npx sequelize-cli db:migrate
 - npx sequelize-cli db:seed:all
 
 Теперь в бд изначально будет:
 
-- в таблице ролей будут 2 роли:
+- в таблице ролей будут 3 роли:
   - user с id = 1
   - admin c id = 10
+  - operator с id = 2
 - в таблице faq будут 4 вопроса с ответами:
   - не пришел билет
   - возврат билетов
   - процедура возврата
   - моего вопроса нет в списке
+- в таблице user будет администратор:
+  - name: "admin"
+  - email: "admin@mail.ru"
+  - password: 123456
 
-**Данный сид загружает дефолтные роли в таблицу ролей:**\
+**Данный сид загружает дефолтные роли (user и admin) в таблицу ролей:**\
 npx sequelize db:seed --seed 20221108102949-default-role.js
 
 **Данный сид загружает дефолтные вопросы в таблицу faq:**\
 npx sequelize db:seed --seed 20221110110357-default-faq.js
+
+**Данный сид загружает администратора в таблицу user:**\
+npx sequelize db:seed --seed 20221112181329-add-admin.js
+
+**Данный сид загружает роль operator в таблицу ролей:**\
+npx sequelize db:seed --seed 20221112182914-add-operator-role.js
 
 ---
 
@@ -66,6 +77,8 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
 1. /question
    - получение списка всех вопросов
    - метод GET
+   - необходимо в заголовках указать токен:
+     - Authorization: `Bearer ${token}`
    - возвращается массив объектов:\
      [\
       &emsp;{\
@@ -117,6 +130,8 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
 3. /question/:id
    - получение одного вопроса
    - метод GET
+   - необходимо в заголовках указать токен:
+     - Authorization: `Bearer ${token}`
    - необходимо указать id вопроса
    - id должно быть INTEGER
    - при запросе меняется флаг вопроса is_read на true
@@ -134,6 +149,8 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
 4. /question/readFlag
    - изменение флага is_read (прочитано) у вопроса(ов)
    - метод PUT
+   - необходимо в заголовках указать токен:
+     - Authorization: `Bearer ${token}`
    - body:\
      {\
      &emsp;"questionId": ARRAY (INTEGER),\
@@ -159,6 +176,9 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
 1. /user
    - получение списка всех пользователей
    - метод GET
+   - необходимо в заголовках указать токен:
+     - Authorization: `Bearer ${token}`
+   - доступно только для пользователей-администраторов
    - возвращается массив объектов:\
      [\
      &emsp;{\
@@ -173,6 +193,79 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
      &emsp;&emsp;"roleId": 1\
      &emsp;}\
      ]
+2. /user/login
+   - вход для администраторов/операторов
+   - метод POST
+   - body:\
+     {\
+     &emsp;"email": STRING NOT NULL,\
+     &emsp;"password": STRING NOT NULL,\
+     }
+   - количество символов в пароле должно быть >=6 и <=20
+   - возвращается объект:\
+     {\
+      &emsp;"token": "\*\*\*"\
+     }
+3. /user/auth
+   - генерация нового токена (если пользователь будет постоянно использовать свой аккаунт, токен будет перезаписываться)
+   - возвращается объект:\
+     {\
+      &emsp;"token": "\*\*\*"\
+     }
+4. /user
+   - создание нового зарегестрированного пользователя
+   - метод POST
+   - необходимо в заголовках указать токен:
+     - Authorization: `Bearer ${token}`
+   - доступно только для пользователей-администраторов
+   - body:\
+     {\
+     &emsp;"email": STRING NOT NULL,\
+     &emsp;"password": STRING NOT NULL,\
+     &emsp;"roleId": INTEGER NOT NULL,\
+     }
+   - количество символов в пароле должно быть >=6 и <=20
+   - возвращается объект:\
+     {\
+     &emsp;"id": 7,\
+     &emsp;"email": "operator1@mail.ru",\
+     &emsp;"roleId": 2,\
+     &emsp;"is_reg": true,\
+     &emsp;"name": "user",\
+     &emsp;"createdAt": "2022-11-14T16:10:40.075Z",\
+     &emsp;"updatedAt": "2022-11-14T16:10:40.075Z"\
+     }
+5. /user/updateRoleAndAuth
+   - регистрация администратором существующего пользователя
+   - метод PUT
+   - необходимо в заголовках указать токен:
+     - Authorization: `Bearer ${token}`
+   - доступно только для пользователей-администраторов
+   - body:\
+     {\
+     &emsp;"id": INTEGER NOT NULL,\
+     &emsp;"roleId": INTEGER NOT NULL,\
+     &emsp;"password": STRING NOT NULL,\
+     }
+   - количество символов в пароле должно быть >=6 и <=20
+   - возвращаемый объект:\
+     {\
+     &emsp;"message": "Данные успешно обновлены",\
+     &emsp;"status": "ok"\
+     }
+6. /user/:id
+   - удаление пользователя
+   - метод DELETE
+   - необходимо в заголовках указать токен:
+     - Authorization: `Bearer ${token}`
+   - доступно только для пользователей-администраторов
+   - необходимо указать id пользователя
+   - id должно быть INTEGER
+   - возвращается объект:\
+     {\
+     &emsp;"message": "Пользователь удален",\
+     &emsp;"status": "ok",\
+     }
 
 [:arrow_up:Содержание](#Содержание)
 
@@ -181,6 +274,8 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
 1. /role
    - получение списка всех ролей
    - метод GET
+   - необходимо в заголовках указать токен:
+     - Authorization: `Bearer ${token}`
    - возвращается массив объектов:\
      [\
      &emsp;{\
@@ -199,6 +294,9 @@ npx sequelize db:seed --seed 20221110110357-default-faq.js
 2. /role
    - создание новой роли
    - метод POST
+   - необходимо в заголовках указать токен:
+     - Authorization: `Bearer ${token}`
+   - доступно только для пользователей-администраторов
    - body:\
      {\
      &emsp;"id": INTEGER NOT NULL UNIQUE,\

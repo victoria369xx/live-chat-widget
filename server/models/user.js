@@ -42,6 +42,12 @@ const User = sequelize.define(
     },
     password: {
       type: DataTypes.STRING,
+      validate: {
+        len: {
+          args: [[6, 20]],
+          msg: "Количество символов в пароле должно быть >=6 и <=20",
+        },
+      },
     },
     is_reg: {
       type: DataTypes.BOOLEAN,

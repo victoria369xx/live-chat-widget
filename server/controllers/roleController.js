@@ -3,7 +3,6 @@ const Role = require("../models/role");
 
 class roleController {
   async create(req, res, next) {
-    //доступ должен быть только у админа (добавить проверку)
     try {
       const { id, name } = req.body;
 
@@ -15,7 +14,6 @@ class roleController {
   }
 
   async getAll(req, res, next) {
-    //доступ должен быть только у админа (добавить проверку)
     try {
       const roles = await Role.findAll();
       return res.json(roles);

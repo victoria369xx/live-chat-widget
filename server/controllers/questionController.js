@@ -48,7 +48,6 @@ class questionController {
   }
 
   async getAll(req, res, next) {
-    //доступ должен быть только у админа (добавить проверку)
     try {
       //можно добавить фильтры по категориям
 
@@ -73,7 +72,6 @@ class questionController {
   }
 
   async getOne(req, res, next) {
-    //доступ должен быть только у админа (добавить проверку)
     try {
       const { id } = req.params;
 
@@ -103,7 +101,6 @@ class questionController {
   }
 
   async updateReadFlag(req, res, next) {
-    //доступ должен быть только у админа (добавить проверку)
     const t = await sequelize.transaction();
     try {
       const { questionId, readFlag } = req.body;
