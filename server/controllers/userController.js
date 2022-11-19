@@ -126,7 +126,14 @@ class UserController {
 
   async getAll(req, res, next) {
     try {
-      const users = await User.findAll();
+      let { roleId } = req.query;
+      let users = [];
+      if (!roleId) {
+        users = await User.findAll();
+      } else {
+        users = await User.findAll({ where: { roleId } });
+      }
+
       return res.json(users);
     } catch (e) {
       next(ApiError.badRequest(e.message));

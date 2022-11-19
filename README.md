@@ -193,7 +193,29 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
      &emsp;&emsp;"roleId": 1\
      &emsp;}\
      ]
-2. /user/login
+2. /user?roleId=${id}
+   - получение списка всех пользователей по определенной роли
+   - метод GET
+   - необходимо в заголовках указать токен:
+     - Authorization: `Bearer ${token}`
+   - доступно только для пользователей-администраторов
+   - id в запросе - это id роли (1 - user, 2 - operator, 10 - admin)
+   - id должно быть INTEGER
+   - возвращается массив объектов:\
+     [\
+     &emsp;{\
+     &emsp;&emsp;"id": 2,\
+     &emsp;&emsp;"name": "Anya",\
+     &emsp;&emsp;"email": null,\
+     &emsp;&emsp;"phone": "+71111111111",\
+     &emsp;&emsp;"password": null,\
+     &emsp;&emsp;"is_reg": false,\
+     &emsp;&emsp;"createdAt": "2022-10-22T21:33:42.774Z",\
+     &emsp;&emsp;"updatedAt": "2022-10-22T21:33:42.774Z",\
+     &emsp;&emsp;"roleId": 1\
+     &emsp;}\
+     ]
+3. /user/login
    - вход для администраторов/операторов
    - метод POST
    - body:\
@@ -206,13 +228,13 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
      {\
       &emsp;"token": "\*\*\*"\
      }
-3. /user/auth
+4. /user/auth
    - генерация нового токена (если пользователь будет постоянно использовать свой аккаунт, токен будет перезаписываться)
    - возвращается объект:\
      {\
       &emsp;"token": "\*\*\*"\
      }
-4. /user
+5. /user
    - создание нового зарегестрированного пользователя
    - метод POST
    - необходимо в заголовках указать токен:
@@ -235,7 +257,7 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
      &emsp;"createdAt": "2022-11-14T16:10:40.075Z",\
      &emsp;"updatedAt": "2022-11-14T16:10:40.075Z"\
      }
-5. /user/updateRoleAndAuth
+6. /user/updateRoleAndAuth
    - регистрация администратором существующего пользователя
    - метод PUT
    - необходимо в заголовках указать токен:
@@ -253,7 +275,7 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
      &emsp;"message": "Данные успешно обновлены",\
      &emsp;"status": "ok"\
      }
-6. /user/:id
+7. /user/:id
    - удаление пользователя
    - метод DELETE
    - необходимо в заголовках указать токен:
