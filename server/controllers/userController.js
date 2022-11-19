@@ -51,10 +51,13 @@ class UserController {
 
   async updateRoleAndAuth(req, res, next) {
     try {
-      const { id, roleId, password } = req.body;
+      const { id, roleId, email, password } = req.body;
 
       if (!id || isNaN(id)) {
         return next(ApiError.badRequest("Некорректный id"));
+      }
+      if (!email) {
+        return next(ApiError.badRequest("Необходимо ввести почту"));
       }
       if (!password) {
         return next(ApiError.badRequest("Необходимо ввести пароль"));
@@ -70,7 +73,7 @@ class UserController {
 
       const hashPassword = await bcrypt.hash(password, 5);
       const changedRow = await User.update(
-        { roleId: roleId, password: hashPassword, is_reg: true },
+        { roleId: roleId, password: hashPassword, is_reg: true, email: email },
         {
           where: {
             id: id,

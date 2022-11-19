@@ -275,6 +275,7 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
      {\
      &emsp;"id": INTEGER NOT NULL,\
      &emsp;"roleId": INTEGER NOT NULL,\
+     &emsp;"email": STRING NOT NULL,\
      &emsp;"password": STRING NOT NULL,\
      }
    - количество символов в пароле должно быть >=6 и <=20
