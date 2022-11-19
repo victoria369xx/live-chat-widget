@@ -70,7 +70,7 @@ class UserController {
 
       const hashPassword = await bcrypt.hash(password, 5);
       const changedRow = await User.update(
-        { roleId: roleId, pasaword: hashPassword, is_reg: true },
+        { roleId: roleId, password: hashPassword, is_reg: true },
         {
           where: {
             id: id,
@@ -108,8 +108,19 @@ class UserController {
       }
 
       const token = generateJwt(user.id, user.email, user.roleId);
+      const result = {
+        token: token,
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        is_reg: user.is_reg,
+        roleId: user.roleId,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      };
 
-      return res.json({ token });
+      return res.json(result);
     } catch (e) {
       next(ApiError.badRequest(e.message));
     }

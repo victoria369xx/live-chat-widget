@@ -227,6 +227,14 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
    - возвращается объект:\
      {\
       &emsp;"token": "\*\*\*"\
+      &emsp;"id": 1,\
+      &emsp;"name": "admin",\
+      &emsp;"email": "admin@mail.ru",\
+      &emsp;"phone": null,\
+      &emsp;"is_reg": true,\
+      &emsp;"roleId": 10,\
+      &emsp;"createdAt": "2022-10-22T21:33:42.774Z",\
+      &emsp;"updatedAt": "2022-10-22T21:33:42.774Z"\
      }
 4. /user/auth
    - генерация нового токена (если пользователь будет постоянно использовать свой аккаунт, токен будет перезаписываться)
