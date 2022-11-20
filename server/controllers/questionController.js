@@ -7,7 +7,7 @@ const User = require("../models/user");
 class questionController {
   async create(req, res, next) {
     try {
-      const { text, name, email, phone, toId } = req.body;
+      const { text, name, email, phone, toId, categoryId } = req.body;
 
       if (!email && !phone) {
         return next(
@@ -39,6 +39,7 @@ class questionController {
         fromId: user.id,
         text: text,
         toId: toId ? toId : null,
+        categoryId: categoryId,
       });
 
       return res.json(question);
@@ -164,9 +165,44 @@ class questionController {
     }
   }
 
-  // async delete(req, res) {} (доступ должен быть только у админа (добавить проверку))
+  async update(req, res, next) {
+    try {
+      const { id, ...newData } = req.body;
 
-  // async update(req, res) {} администратор может менять toId (тогда флаг is_read автоматически должен меняться на false), categoryId, is_read (доступ должен быть только у админа (добавить проверку))
+      if (!id) {
+        return next(ApiError.badRequest("Необходимо указать id вопроса"));
+      }
+
+      const question = await Question.findOne({ where: { id } });
+      if (!question) {
+        return next(ApiError.internal("Вопрос не найден"));
+      }
+
+      //если меняется toId, то флаг is_read становится false
+      if (newData.toId) {
+        newData.is_read = false;
+      }
+
+      const changedRow = await Question.update(newData, {
+        where: { id },
+      });
+
+      if (changedRow[0] === 0) {
+        return next(ApiError.internal("Данные вопроса не обновлены"));
+      }
+
+      const result = {
+        message: "Данные успешно обновлены",
+        status: "ok",
+      };
+
+      return res.json(result);
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
+  }
+
+  // async delete(req, res) {} (доступ должен быть только у админа (добавить проверку))
 }
 
 module.exports = new questionController();

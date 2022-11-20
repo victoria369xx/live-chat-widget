@@ -36,6 +36,11 @@ Category.associate = (models) => {
     foreignKey: "categoryId",
     allowNull: true,
   });
+  Category.hasMany(models.User, {
+    as: "categories",
+    foreignKey: "categoryId",
+    allowNull: true,
+  });
 };
 
 module.exports = Category;

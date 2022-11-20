@@ -69,6 +69,16 @@ const User = sequelize.define(
         },
       },
     },
+    categoryId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      validate: {
+        isInt: {
+          args: true,
+          msg: "Значение categoryId должно быть типа integer",
+        },
+      },
+    },
   },
   {}
 );
@@ -85,6 +95,10 @@ User.associate = (models) => {
   User.belongsTo(models.Role, {
     as: "role",
     foreignKey: "roleId",
+  });
+  User.belongsTo(models.Category, {
+    as: "category",
+    foreignKey: "categoryId",
   });
 };
 

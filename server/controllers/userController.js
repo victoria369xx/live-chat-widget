@@ -39,6 +39,7 @@ class UserController {
         id: user.id,
         email: user.email,
         roleId: user.roleId,
+        categoryId: user.categoryId,
         is_reg: user.is_reg,
         name: user.name,
         createdAt: user.createdAt,
@@ -191,6 +192,38 @@ class UserController {
     }
   }
 
+  async update(req, res, next) {
+    try {
+      const { id, ...newData } = req.body;
+
+      if (!id) {
+        return next(ApiError.badRequest("Необходимо указать id пользователя"));
+      }
+
+      const user = await User.findOne({ where: { id } });
+      if (!user) {
+        return next(ApiError.internal("Пользователь не найден"));
+      }
+
+      const changedRow = await User.update(newData, {
+        where: { id },
+      });
+
+      if (changedRow[0] === 0) {
+        return next(ApiError.internal("Данные пользователя не обновлены"));
+      }
+
+      const result = {
+        message: "Данные успешно обновлены",
+        status: "ok",
+      };
+
+      return res.json(result);
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
+  }
+
   // async logout(req, res, next) {
   //   try {
   //   } catch (e) {
@@ -199,7 +232,6 @@ class UserController {
   // }
 
   // async get(req, res, next) {}
-  // async update(req, res, next) {}
 }
 
 module.exports = new UserController();

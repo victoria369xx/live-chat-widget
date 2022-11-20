@@ -52,8 +52,12 @@ const Question = sequelize.define(
     },
     categoryId: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
       validate: {
+        notEmpty: {
+          args: true,
+          msg: "Необходимо указать categoryId",
+        },
         isInt: {
           args: true,
           msg: "Значение categoryId должно быть типа integer",
