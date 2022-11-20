@@ -3,6 +3,7 @@ const router = new Router();
 const userController = require("../controllers/userController");
 const authMiddleware = require("../middleware/authMiddleware");
 const checkRole = require("../middleware/checkRoleMiddleare");
+const checkUser = require("../middleware/checkUserMiddleware");
 
 router.post("/login", userController.login);
 //генерация нового токена (если пользователь будет постоянно использовать свой аккаунт, токен будет перезаписываться)
@@ -35,9 +36,10 @@ router.delete(
   checkRole(process.env.ADMIN_ID),
   userController.delete
 );
+//авторизованный пользователь обновляет свои данные
+router.put("/", authMiddleware, checkUser(), userController.update);
 
 //router.get("/:id", userController.get); - получение одного пользователя
 //router.get("/logout", userController.logout) - выход пользователя
-//router.put() - обновление пользователя
 
 module.exports = router;

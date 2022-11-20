@@ -9,6 +9,7 @@
    2. [Users](#Users)
    3. [Roles](#Roles)
    4. [FAQ](#FAQ)
+   5. [Category](#Category)
 
 ### Запуск контейнера PostgreSQL:
 
@@ -66,6 +67,9 @@ npx sequelize db:seed --seed 20221112181329-add-admin.js
 **Данный сид загружает роль operator в таблицу ролей:**\
 npx sequelize db:seed --seed 20221112182914-add-operator-role.js
 
+**Данный сид загружает дефолтные категории в таблицу категорий:**\
+npx sequelize db:seed --seed 20221120115802-add-category.js
+
 ---
 
 ### API
@@ -89,7 +93,7 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
       &emsp;&emsp;"updatedAt": "2022-10-22T21:18:14.002Z",\
       &emsp;&emsp;"fromId": 1,\
       &emsp;&emsp;"toId": null,\
-      &emsp;&emsp;"categoryId": null\
+      &emsp;&emsp;"categoryId": 1\
       &emsp;},\
       &emsp;{\
       &emsp;&emsp;"id": 2,\
@@ -99,7 +103,7 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
       &emsp;&emsp;"updatedAt": "2022-10-22T21:33:42.816Z",\
       &emsp;&emsp;"fromId": 2,\
       &emsp;&emsp;"toId": null,\
-      &emsp;&emsp;"categoryId": null\
+      &emsp;&emsp;"categoryId": 1\
       &emsp;}\
       ]
    - вопросы в массиве возвращаются в порядке убвания по дате создания (сначала новые вопросы)
@@ -111,7 +115,8 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
      &emsp;"text": STRING NOT NULL,\
      &emsp;"name": STRING NOT NULL,\
      &emsp;"email": STRING UNIQUE,\
-     &emsp;"phone": STRING UNIQUE\
+     &emsp;"phone": STRING UNIQUE,\
+     &emsp;"categoryId": INTEGER NOT NULL\
      }
    - должно быть заполнено либо поле email, либо phone (оба NULL нельзя)
    - возвращается объект:\
@@ -123,7 +128,7 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
      &emsp;"toId": null,\
      &emsp;"updatedAt": "2022-10-22T22:06:06.537Z",\
      &emsp;"createdAt": "2022-10-22T22:06:06.537Z",\
-     &emsp;"categoryId": null\
+     &emsp;"categoryId": 1\
      }
    - также создается пользователь, если email или phone новые (роль по умолчанию ставится 1 - роль user, флаг is_reg ставится false, то есть незарегестрированный пользователь)\
      если пользователь с таким email или phone уже есть, но имя другое, то имя пользователя меняется на новое
@@ -144,7 +149,7 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
       &emsp;"toId": null,\
       &emsp;"updatedAt": "2022-10-22T22:06:06.537Z",\
       &emsp;"createdAt": "2022-10-22T22:06:06.537Z",\
-      &emsp;"categoryId": null\
+      &emsp;"categoryId": 1\
       }
 4. /question/readFlag
    - изменение флага is_read (прочитано) у вопроса(ов)
@@ -168,6 +173,24 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
    - changedRow - количество измененных записей в базе данных
    - если changedRow == 0, то message будет "Вопросов с таким(и) id нет, данные не обновлены"
    - если хотя бы одно значение в questionId будет некорректным (не тот тип, или вопроса с таким id нет), то никакие данные не обновятся
+5. /question
+   - обновление вопроса
+   - метод PUT
+   - необходимо в заголовках указать токен:
+     - Authorization: `Bearer ${token}`
+   - body:\
+     {\
+     &emsp;"id": INTEGER NOT NULL,\
+     &emsp;тут могут быть любые данные для обновления в виде ключ: значение\
+     }
+   - id обязательно должно быть в теле запроса
+   - если в body будет ключ toId, то флаг is_read у вопроса будет также меняться (на false)
+     - подразумевается, что наличие ключа toId обозначает, что у вопроса меняется toId
+   - возвращаемый объект:\
+     {\
+     &emsp;"message": "Данные успешно обновлены",\
+     &emsp;"status": "ok"\
+     }
 
 [:arrow_up:Содержание](#Содержание)
 
@@ -190,7 +213,8 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
      &emsp;&emsp;"is_reg": false,\
      &emsp;&emsp;"createdAt": "2022-10-22T21:33:42.774Z",\
      &emsp;&emsp;"updatedAt": "2022-10-22T21:33:42.774Z",\
-     &emsp;&emsp;"roleId": 1\
+     &emsp;&emsp;"roleId": 1,\
+     &emsp;&emsp;"categoryId": null\
      &emsp;}\
      ]
 2. /user?roleId=${id}
@@ -212,7 +236,8 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
      &emsp;&emsp;"is_reg": false,\
      &emsp;&emsp;"createdAt": "2022-10-22T21:33:42.774Z",\
      &emsp;&emsp;"updatedAt": "2022-10-22T21:33:42.774Z",\
-     &emsp;&emsp;"roleId": 1\
+     &emsp;&emsp;"roleId": 1,\
+     &emsp;&emsp;"categoryId": null\
      &emsp;}\
      ]
 3. /user/login
@@ -233,6 +258,7 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
       &emsp;"phone": null,\
       &emsp;"is_reg": true,\
       &emsp;"roleId": 10,\
+      &emsp;&emsp;"categoryId": null,\
       &emsp;"createdAt": "2022-10-22T21:33:42.774Z",\
       &emsp;"updatedAt": "2022-10-22T21:33:42.774Z"\
      }
@@ -260,6 +286,7 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
      &emsp;"id": 7,\
      &emsp;"email": "operator1@mail.ru",\
      &emsp;"roleId": 2,\
+     &emsp;&emsp;"categoryId": null,\
      &emsp;"is_reg": true,\
      &emsp;"name": "user",\
      &emsp;"createdAt": "2022-11-14T16:10:40.075Z",\
@@ -296,6 +323,24 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
      {\
      &emsp;"message": "Пользователь удален",\
      &emsp;"status": "ok",\
+     }
+8. /user
+   - обновление данных пользователя (кроме пароля)
+   - метод PUT
+   - необходимо в заголовках указать токен:
+     - Authorization: `Bearer ${token}`
+   - пользователь может обновить только свои данные
+     - администратор может обновить данные всех пользователей
+   - body:\
+     {\
+     &emsp;"id": INTEGER NOT NULL,\
+     &emsp;тут могут быть любые данные для обновления (кроме пароля) в виде ключ: значение\
+     }
+   - id обязательно должно быть в теле запроса
+   - возвращаемый объект:\
+     {\
+     &emsp;"message": "Данные успешно обновлены",\
+     &emsp;"status": "ok"\
      }
 
 [:arrow_up:Содержание](#Содержание)
@@ -363,6 +408,29 @@ npx sequelize db:seed --seed 20221112182914-add-operator-role.js
      &emsp;&emsp;"title": "Возврат билетов",\
      &emsp;&emsp;"answer": "Согласно Постановлению Правительства Российской Федерации №830 от 6 июня 2020 г у организатора есть 180 дней с момента подачи вашей заявки на возврат для того, чтобы определиться с датой переноса, или сделать вам возврат. Обратите внимание на то, что если мероприятие было перенесено, организатор может отказать в возврате. Ваши билеты действительны на новую дату проведения ивента.",\
      &emsp;&emsp;"categoryId": null,\
+     &emsp;&emsp;"createdAt": "2022-11-10T11:14:06.707Z",\
+     &emsp;&emsp;"updatedAt": "2022-11-10T11:14:06.707Z"\
+     &emsp;}\
+     ]
+
+[:arrow_up:Содержание](#Содержание)
+
+#### Category
+
+1. /category
+   - получение списка всех категорий
+   - метод GET
+   - возвращается массив объектов:\
+     [\
+     &emsp;{\
+     &emsp;&emsp;"id": 1,\
+     &emsp;&emsp;"name": "Другое",\
+     &emsp;&emsp;"createdAt": "2022-11-10T11:14:06.697Z",\
+     &emsp;&emsp;"updatedAt": "2022-11-10T11:14:06.697Z"\
+     &emsp;},\
+     &emsp;{\
+     &emsp;&emsp;"id": 2,\
+     &emsp;&emsp;"name": "Возврат товара",\
      &emsp;&emsp;"createdAt": "2022-11-10T11:14:06.707Z",\
      &emsp;&emsp;"updatedAt": "2022-11-10T11:14:06.707Z"\
      &emsp;}\
